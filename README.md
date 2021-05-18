@@ -1,7 +1,7 @@
 # SysY Compiler
 ### Course Project of *Compiler: Principles & Practice, 2021, Spring*
 
-This repo authored by Ding Rui, dromniscience@gmail.com
+This repo is authored by Ding Rui, dromniscience@gmail.com
 
 Documentation of this lab can be found here: [PKU online doc for SysY compiler lab](https://pku-minic.github.io/online-doc/#/)
 
