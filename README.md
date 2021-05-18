@@ -5,10 +5,26 @@ This repo authored by Ding Rui, dromniscience@gmail.com
 
 Documentation of this lab can be found here: [PKU online doc for SysY compiler lab](https://pku-minic.github.io/online-doc/#/)
 
+### Brief Intro
+
+SysY is a Turing-complete subset of C language, though pointers have to be mimicked by an array header plus an offset. The SysY compiler has the ultimate end of compiling a SysY source file into RISC-V assembly, which can readily run on a platform supporting RISC-V32 toolchain. Moreover, intermediate represantations are provided to generate meaningful phased result. These IRs can be executed on MiniVM distributed and maintained by the course staff, and are available here [[pku-minic]](https://github.com/pku-minic/MiniVM). Part of test cases on the class machine are available here [[open-test-cases]](https://github.com/pku-minic/open-test-cases).
+
+You have to work all the way out from the very scratch. Good luck!
+
 ### Current Status
 - All tests passed. Performance: 292s
 - Naive local optimization on Eeyore- & Tigger-level
 - Naive register allocation scheme, i.e. heavy loads & stores.
+
+### Requirements
+The version provided here refers to the one on my PC when I tested these codes. Since I made no use of deprecated features (Except for the 'register' specifier which is incompatible with C++17. But it is introduced into code due to bison), this repo is compatible with earlier version of flex, bison and make as well as other mainstream C++11 compilers.
+```
+flex 2.5.0
+bison 3.7.6
+GNU make 3.81
+clang 12.0.0
+```
+Your C++ compiler should at least fully support C++11 standard.
 
 ### Usage
 
@@ -34,7 +50,7 @@ Given a file written in SysY,
 ./compiler -e in.sy -o out.ee     # generate eeyore file
 ./compiler -t in.sy -o out.tg     # generate tigger file
 ./compiler -S in.sy -o out.S      # generate RISC-V file
-./compiler -h  # helper info
+./compiler -h  # help info
 ```
  Syntax errors and semantic errors will be reported in a way much similar to clang.
 
