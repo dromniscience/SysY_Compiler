@@ -1,5 +1,6 @@
 # SysY Compiler
 ### Course Project of *Compiler: Principles & Practice, 2021, Spring*
+[![](https://travis-ci.com/github/dromniscience/SysY_Compiler)](https://travis-ci.com/github/dromniscience/SysY_Compiler)
 
 This repo is authored by Ding Rui, dromniscience@gmail.com
 
