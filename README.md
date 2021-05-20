@@ -1,12 +1,12 @@
 # SysY Compiler
-### Course Project of *Compiler: Principles & Practice, 2021, Spring*
+### Course Project of *Compiler: Principles & Practice, 2021 Spring*
 [![build](https://api.travis-ci.com/dromniscience/SysY_Compiler.svg?branch=master)](https://github.com/dromniscience/SysY_Compiler)
 
 This repo is authored by Ding Rui, dromniscience@gmail.com
 
 Documentation of this lab can be found here: [PKU online doc for SysY compiler lab](https://pku-minic.github.io/online-doc/#/)
 
-### Brief Intro
+## Brief Intro
 
 SysY is a Turing-complete subset of C language, though pointers have to be mimicked by an array header plus an offset. The SysY compiler has the ultimate end of compiling a SysY source file into RISC-V assembly, which can readily run on a platform supporting RISC-V32 toolchain. Moreover, intermediate represantations are provided to generate meaningful phased result. These IRs can be executed on MiniVM distributed and maintained by the course staff, and are available here [[pku-minic]](https://github.com/pku-minic/MiniVM). Part of test cases on the class machine are available here [[open-test-cases]](https://github.com/pku-minic/open-test-cases).
 
@@ -15,7 +15,7 @@ You have to work all the way out from the very scratch. Good luck!
 ### Current Status
 - All tests passed. Performance: 292s
 - Naive local optimization on Eeyore- & Tigger-level
-- Naive register allocation scheme, i.e. heavy loads & stores.
+- Naive register allocation scheme. i.e., heavy loads & stores.
 
 ### Requirements
 The version provided here refers to the one on my PC when I tested these codes. Since I made no use of deprecated features (Except for the 'register' specifier which is incompatible with C++17. But it is introduced into code due to bison), this repo is compatible with earlier version of flex, bison and make as well as other mainstream C++11 compilers.
@@ -55,7 +55,7 @@ Given a file written in SysY,
 ```
  Syntax errors and semantic errors will be reported in a way much similar to clang.
 
-### General Logic of This Compiler
+## General Logic of This Compiler
 
 #### SysY -> Eeyore
 

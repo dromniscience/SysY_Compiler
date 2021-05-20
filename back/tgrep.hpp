@@ -117,6 +117,11 @@ public:
 		}
 	}
 
+	// Dump as Tigger
+	void TGDump();
+	// Dump as RISC-V
+	void RVDump();
+
 	TGRecord type;
 	std::string var;
 	int reg[3];

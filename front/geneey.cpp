@@ -41,7 +41,7 @@ bool endpoint = false;
 
 void DumpEE2file(){
 	for(auto &i: eelines)
-		EEDump(i);
+		i.EEDump();
 }
 
 static inline list<string>::iterator Newtemp(){
@@ -365,7 +365,7 @@ void DeclAST::Generator(){
 
 // FunDefAST
 
-void FunDefAST::Dump2file(){
+void FunDefAST::Convert2EE(){
 	eelines.splice(eelines.end(), funclines);
 }
 
@@ -410,7 +410,7 @@ void FunDefAST::Generator(){
 	funclines.emplace_back(EERecord::End, std::string(addr));
 
 	/* Dump to file */
-	Dump2file();
+	Convert2EE();
 	
 	/* clear all the containers */
 	funclines.clear();

@@ -251,12 +251,12 @@ void TranslateEE2TG(){
 
 void DumpTG2file(){
 	for(auto &i: tglines)
-		TGDump(i);
+		i.TGDump();
 }
 
 void DumpRV2file(){
 	for(auto &i: tglines)
-		RVDump(i);
+		i.RVDump();
 }
 
 

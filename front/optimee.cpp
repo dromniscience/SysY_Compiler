@@ -22,12 +22,19 @@ public:
 		nbno[0] = nbno[1] = EDBB;
 	}
 
-	int bno;
+	int bno; // block no [into bblist]
 	EEptr bgn, end;
-	int nbno[2];
-	bool visited;
+	int nbno[2]; // child block no
+	bool visited; // used in function VisitBBEE
 };
-std::vector<BBEE> bblist;
+
+// List of basic block (EE-level)
+static std::vector<BBEE> bblist;
+// Mapped a temporary to its declaration (EE-level)
+static std::unordered_map<std::string, EEptr> eerec;
+// Mapped a constant temporary to its value (EE-level)
+static std::unordered_map<std::string, std::string> eeval;
+
 
 static void VisitBBEE(BBEE &p){
 	if(p.visited) return;
@@ -36,6 +43,13 @@ static void VisitBBEE(BBEE &p){
 	if(p.nbno[1] != EDBB) VisitBBEE(bblist[p.nbno[1]]);
 }
 
+// Common subexpression (EE-level)
+static void CommonsubexpBBEE(BBEE &p){
+	// std::unordered_map<
+}
+
+
+// Build up basic block (EE-level)
 static EEptr InFuncBBEE(EEptr p){
 	// assert(p->type == EERecord::Header);
 
@@ -113,6 +127,7 @@ static EEptr InFuncBBEE(EEptr p){
 	return p;
 }
 
+// Remove dead BB (EE-level)
 void RedundantBBEE(){
 	EEptr i = eelines.begin();
 	while(i->type != EERecord::Header) i++;
@@ -154,18 +169,16 @@ static inline std::string CalculateEE(std::string &p, std::string &q, std::strin
 // 1-stride assignment absorption
 // Arithmetic eliminations
 void NaiveEEOpt(){
-	std::unordered_map<std::string, EEptr> rec;
-	std::unordered_map<std::string, std::string> val;
 	for(auto i = eelines.begin(); i != eelines.end();++i){
 		if(i->type == EERecord::Decl){
-			rec.emplace(i->sym[0], i);
+			eerec.emplace(i->sym[0], i);
 			continue;
 		}
 
 		// This first line may be of use in a Cond EERecord
-		if(val.count(i->sym[0])) i->sym[0] = val[i->sym[0]];
-		if(val.count(i->sym[1])) i->sym[1] = val[i->sym[1]];
-		if(val.count(i->sym[2])) i->sym[2] = val[i->sym[2]];
+		if(eeval.count(i->sym[0])) i->sym[0] = eeval[i->sym[0]];
+		if(eeval.count(i->sym[1])) i->sym[1] = eeval[i->sym[1]];
+		if(eeval.count(i->sym[2])) i->sym[2] = eeval[i->sym[2]];
 
 		// Const boolean exp evaluation
 		if(i->type == EERecord::Cond){
@@ -190,7 +203,7 @@ void NaiveEEOpt(){
 					p->sym[0] = i->sym[1];
 					p->sym[1] = i->sym[2];
 					p->op = i->op;
-					eelines.erase(rec[i->sym[0]]);
+					eelines.erase(eerec[i->sym[0]]);
 					eelines.erase(i);
 					i = --p;
 					continue;
@@ -205,7 +218,7 @@ void NaiveEEOpt(){
 			if(i->sym[0][0] == 't' && q->type == EERecord::Copy \
 			&& q->sym[1] == i->sym[0]){
 				i->sym[0] = q->sym[0];
-				eelines.erase(rec[q->sym[1]]);
+				eelines.erase(eerec[q->sym[1]]);
 				eelines.erase(q);
 			}
 		}
@@ -238,8 +251,8 @@ void NaiveEEOpt(){
 			// source code is ganruateed to be SSA with respect to tempos
 			// substitute tempos whose value is compiling-time constant
 			if(i->sym[0][0] == 't' && !IsEEVar(i->sym[1])){
-				val[i->sym[0]] = i->sym[1];
-				eelines.erase(rec[i->sym[0]]);
+				eeval[i->sym[0]] = i->sym[1];
+				eelines.erase(eerec[i->sym[0]]);
 				auto p = i--;
 				eelines.erase(p);
 				continue;

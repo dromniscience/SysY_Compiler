@@ -26,73 +26,73 @@ bool ee_global = true;
 int ee_offset = 0;
 int ee_glbcnt = 0;
 
-void TGDump(const TGLine &p){
+void TGLine::TGDump(){
 	using std::cout;
 	using std::endl;
 	using std::string;
 
-	switch(p.type){
+	switch(type){
 		case TGRecord::Decl:
-			if(p.num[0])
-				cout << p.var << " = malloc " << p.num[0] << endl;
+			if(num[0])
+				cout << var << " = malloc " << num[0] << endl;
 			else
-				cout << p.var << " = 0" << endl;
+				cout << var << " = 0" << endl;
 			return;
 		case TGRecord::Header:
-			cout << p.var << " [" << p.num[0] << "] [" << p.num[1] << "]" << endl;
+			cout << var << " [" << num[0] << "] [" << num[1] << "]" << endl;
 			return;
 		case TGRecord::End:
-			cout << "end " << p.var << endl;
+			cout << "end " << var << endl;
 			return;
 		case TGRecord::Binary:
-			cout << regfile[p.reg[0]] << " = " << regfile[p.reg[1]] \
-				<< " " << p.op << " " << regfile[p.reg[2]] << endl;
+			cout << regfile[reg[0]] << " = " << regfile[reg[1]] \
+				<< " " << op << " " << regfile[reg[2]] << endl;
 			return;
 		case TGRecord::Unary:
-			cout << regfile[p.reg[0]] << " = " << p.op << " " << regfile[p.reg[1]] << endl;
+			cout << regfile[reg[0]] << " = " << op << " " << regfile[reg[1]] << endl;
 			return;
 		case TGRecord::Copy:
-			cout << regfile[p.reg[0]] << " = " << regfile[p.reg[1]] << endl;
+			cout << regfile[reg[0]] << " = " << regfile[reg[1]] << endl;
 			return;
 		case TGRecord::LArr:
-			cout << regfile[p.reg[0]] << "[" << p.num[0] << "] = " << regfile[p.reg[1]] << endl;
+			cout << regfile[reg[0]] << "[" << num[0] << "] = " << regfile[reg[1]] << endl;
 			return;
 		case TGRecord::RArr:
-			cout << regfile[p.reg[0]] << " = " << regfile[p.reg[1]] << "[" << p.num[0] << "]" << endl;
+			cout << regfile[reg[0]] << " = " << regfile[reg[1]] << "[" << num[0] << "]" << endl;
 			return;
 		case TGRecord::Cond:
-			cout << "if " << regfile[p.reg[0]] << " " << p.op << " " << regfile[p.reg[1]] \
-				<< " goto " << p.label << endl;
+			cout << "if " << regfile[reg[0]] << " " << op << " " << regfile[reg[1]] \
+				<< " goto " << label << endl;
 			return;
 		case TGRecord::Uncond:
-			cout << "goto " << p.label << endl;
+			cout << "goto " << label << endl;
 			return;
 		case TGRecord::Label:
-			cout << p.label << ":" << endl;
+			cout << label << ":" << endl;
 			return;
 		case TGRecord::Ass:
-			cout << regfile[p.reg[0]] << " = " << p.num[0] << endl;
+			cout << regfile[reg[0]] << " = " << num[0] << endl;
 			return;
 		case TGRecord::Call:
-			cout << "call " << p.var << endl;
+			cout << "call " << var << endl;
 			return;
 		case TGRecord::Ret:
 			cout << "return" << endl;
 			return;
 		case TGRecord::ST:
-			cout << "store " << regfile[p.reg[0]] << " " << p.num[0] << endl;
+			cout << "store " << regfile[reg[0]] << " " << num[0] << endl;
 			return;
 		case TGRecord::LDH:
-			cout << "load " << p.var << " " << regfile[p.reg[0]] << endl;
+			cout << "load " << var << " " << regfile[reg[0]] << endl;
 			return;
 		case TGRecord::LDS:
-			cout << "load " << p.num[0] << " " << regfile[p.reg[0]] << endl;
+			cout << "load " << num[0] << " " << regfile[reg[0]] << endl;
 			return;
 		case TGRecord::LDAH:
-			cout << "loadaddr " << p.var << " " << regfile[p.reg[0]] << endl;
+			cout << "loadaddr " << var << " " << regfile[reg[0]] << endl;
 			return;
 		default:
-			cout << "loadaddr " << p.num[0] << " " << regfile[p.reg[0]] << endl;
+			cout << "loadaddr " << num[0] << " " << regfile[reg[0]] << endl;
 			return;
 		
 	}
@@ -139,35 +139,35 @@ Unary:
 	return;
 }
 
-void RVDump(const TGLine &p){
+void TGLine::RVDump(){
 	using std::cout;
 	using std::endl;
 	using std::string;
 
 	static int STK = 0;
 
-	switch(p.type){
+	switch(type){
 		case TGRecord::Decl:
-			if(p.num[0])
-				cout << "  .comm     " << p.var << ", " << p.num[0] << ", 4" << endl;
+			if(num[0])
+				cout << "  .comm     " << var << ", " << num[0] << ", 4" << endl;
 			else{
-				cout << "  .global   " << p.var << endl;
+				cout << "  .global   " << var << endl;
 				cout << "  .section  " << ".sdata" << endl;
 				cout << "  .align    " << "2" << endl;
-				cout << "  .type     " << p.var << ", @object" << endl;
-				cout << "  .size     " << p.var << ", 4" << endl;
-				cout << p.var << ":" << endl;
-				cout << "  .word     " << p.num[0] << endl;
+				cout << "  .type     " << var << ", @object" << endl;
+				cout << "  .size     " << var << ", 4" << endl;
+				cout << var << ":" << endl;
+				cout << "  .word     " << num[0] << endl;
 			}
 			cout << endl;
 			return;
 		case TGRecord::Header:
-			STK = ((p.num[1] >> 2) + 2) << 4;
+			STK = ((num[1] >> 2) + 2) << 4;
 			cout << "  .text" << endl;
 			cout << "  .align    2" << endl;
-			cout << "  .global   " << p.var.substr(2) << endl;
-			cout << "  .type     " << p.var.substr(2) << ", @function" << endl;
-			cout << p.var.substr(2) << ":" << endl;
+			cout << "  .global   " << var.substr(2) << endl;
+			cout << "  .type     " << var.substr(2) << ", @function" << endl;
+			cout << var.substr(2) << ":" << endl;
 			cout << "  sw    ra, -4(sp)" << endl;
 			// cout << "  sw    s0, -8(sp)" << endl;
 			// cout << "  sw    s1, -12(sp)" << endl;
@@ -196,48 +196,48 @@ void RVDump(const TGLine &p){
 			// cout << "  lw    s3, 0(s3)" << endl;
 			return;
 		case TGRecord::End:
-			cout << "  .size     " << p.var.substr(2) << ", .-" << p.var.substr(2) << endl;
+			cout << "  .size     " << var.substr(2) << ", .-" << var.substr(2) << endl;
 			cout << endl;
 			return;
 		case TGRecord::Binary:
 		case TGRecord::Unary:
 		case TGRecord::Cond:
-			Op2RV(p);
+			Op2RV(*this);
 			return;
 		case TGRecord::Copy:
-			cout << "  mv    " << regfile[p.reg[0]] << ", " << regfile[p.reg[1]] << endl;
+			cout << "  mv    " << regfile[reg[0]] << ", " << regfile[reg[1]] << endl;
 			return;
 		case TGRecord::LArr:
-			if(p.num[0] < 2048)
-			cout << "  sw    " << regfile[p.reg[1]] << ", " \
-				<< p.num[0] << "(" << regfile[p.reg[0]] << ")" << endl;
+			if(num[0] < 2048)
+			cout << "  sw    " << regfile[reg[1]] << ", " \
+				<< num[0] << "(" << regfile[reg[0]] << ")" << endl;
 			else{
-				cout << "  li    t0, " << p.num[0] << endl;
-				cout << "  add   t0, t0, " << regfile[p.reg[0]] << endl;
-				cout << "  sw    " << regfile[p.reg[1]] << ", 0(t0)" << endl;
+				cout << "  li    t0, " << num[0] << endl;
+				cout << "  add   t0, t0, " << regfile[reg[0]] << endl;
+				cout << "  sw    " << regfile[reg[1]] << ", 0(t0)" << endl;
 			}
 			return;
 		case TGRecord::RArr:
-			if(p.num[0] < 2048)
-			cout << "  lw    " << regfile[p.reg[0]] << ", " \
-				<< p.num[0] << "(" << regfile[p.reg[1]] << ")" << endl;
+			if(num[0] < 2048)
+			cout << "  lw    " << regfile[reg[0]] << ", " \
+				<< num[0] << "(" << regfile[reg[1]] << ")" << endl;
 			else{
-				cout << "  li    t0, " << p.num[0] << endl;
-				cout << "  add   t0, t0, " << regfile[p.reg[1]] << endl;
-				cout << "  lw    " << regfile[p.reg[0]] << ", 0(t0)" << endl;
+				cout << "  li    t0, " << num[0] << endl;
+				cout << "  add   t0, t0, " << regfile[reg[1]] << endl;
+				cout << "  lw    " << regfile[reg[0]] << ", 0(t0)" << endl;
 			}
 			return;
 		case TGRecord::Uncond:
-			cout << "  j  ." << p.label << endl;
+			cout << "  j  ." << label << endl;
 			return;
 		case TGRecord::Label:
-			cout << "." << p.label << ":" << endl;
+			cout << "." << label << ":" << endl;
 			return;
 		case TGRecord::Ass:
-			cout << "  li    " << regfile[p.reg[0]] << ", " << p.num[0] << endl;
+			cout << "  li    " << regfile[reg[0]] << ", " << num[0] << endl;
 			return;
 		case TGRecord::Call:
-			cout << "  call  " << p.var.substr(2) << endl;
+			cout << "  call  " << var.substr(2) << endl;
 			return;
 		case TGRecord::Ret:
 			if(STK < 2048)
@@ -250,36 +250,36 @@ void RVDump(const TGLine &p){
 			cout << "  ret" << endl;
 			return;
 		case TGRecord::ST:
-			if(p.num[0] < 512)
-				cout << "  sw    " << regfile[p.reg[0]] << ", " << (p.num[0] * 4) << "(sp)" << endl;
+			if(num[0] < 512)
+				cout << "  sw    " << regfile[reg[0]] << ", " << (num[0] * 4) << "(sp)" << endl;
 			else{
-				cout << "  li    t0, " << (p.num[0] * 4) << endl;
+				cout << "  li    t0, " << (num[0] * 4) << endl;
 				cout << "  add   t0, t0, sp" << endl;
-				cout << "  sw    " << regfile[p.reg[0]] << ", 0(t0)" << endl;
+				cout << "  sw    " << regfile[reg[0]] << ", 0(t0)" << endl;
 			}
 			return;
 		case TGRecord::LDH:
-			cout << "  lui   " << regfile[p.reg[0]] << ", %hi(" << p.var << ")" << endl;
-			cout << "  lw    " << regfile[p.reg[0]] << ", %lo(" << p.var << ")(" << regfile[p.reg[0]] << ")" << endl;
+			cout << "  lui   " << regfile[reg[0]] << ", %hi(" << var << ")" << endl;
+			cout << "  lw    " << regfile[reg[0]] << ", %lo(" << var << ")(" << regfile[reg[0]] << ")" << endl;
 			return;
 		case TGRecord::LDS:
-			if(p.num[0] < 512)
-				cout << "  lw    " << regfile[p.reg[0]] << ", " << (p.num[0] * 4) << "(sp)" << endl;
+			if(num[0] < 512)
+				cout << "  lw    " << regfile[reg[0]] << ", " << (num[0] * 4) << "(sp)" << endl;
 			else{
-				cout << "  li    t0, " << (p.num[0] * 4) << endl;
+				cout << "  li    t0, " << (num[0] * 4) << endl;
 				cout << "  add   t0, t0, sp" << endl;
-				cout << "  lw    " << regfile[p.reg[0]] << ", 0(t0)" << endl;
+				cout << "  lw    " << regfile[reg[0]] << ", 0(t0)" << endl;
 			}
 			return;
 		case TGRecord::LDAH:
-			cout << "  la    " << regfile[p.reg[0]] << ", " << p.var << endl;
+			cout << "  la    " << regfile[reg[0]] << ", " << var << endl;
 			return;
 		default:
-			if(p.num[0] < 512)
-				cout << "  addi  " << regfile[p.reg[0]] << ", sp, " << (p.num[0] * 4) << endl;
+			if(num[0] < 512)
+				cout << "  addi  " << regfile[reg[0]] << ", sp, " << (num[0] * 4) << endl;
 			else{
-				cout << "  li    t0, " << (p.num[0] * 4) << endl;
-				cout << "  add   " << regfile[p.reg[0]] << ", sp, t0" << endl;
+				cout << "  li    t0, " << (num[0] * 4) << endl;
+				cout << "  add   " << regfile[reg[0]] << ", sp, t0" << endl;
 			}
 			return;
 	}

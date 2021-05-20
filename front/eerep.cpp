@@ -14,74 +14,74 @@
 
 std::list<EELine> eelines;
 
-void EEDump(const EELine &p){
+void EELine::EEDump(){
 	using std::cout;
 	using std::endl;
 	using std::string;
 
-	switch(p.type){
+	switch(type){
 		case EERecord::Decl:
 			cout << "var ";
-			if(!p.num.empty())
-				cout << p.num << " ";
-			cout << p.sym[0] << endl;
+			if(!num.empty())
+				cout << num << " ";
+			cout << sym[0] << endl;
 			return;
 		case EERecord::Header:
-			cout << p.sym[0] << " [" << p.num << "]" << endl;
+			cout << sym[0] << " [" << num << "]" << endl;
 			return;
 		case EERecord::End:
-			cout << "end " << p.sym[0] << endl;
+			cout << "end " << sym[0] << endl;
 			return;
 		case EERecord::Binary:
-			if(p.label.empty()) // Arithmetic Op
-			cout << p.sym[0] << " = " << p.sym[1] \
-				<< " " << p.op << " " << p.sym[2] << endl;
+			if(label.empty()) // Arithmetic Op
+			cout << sym[0] << " = " << sym[1] \
+				<< " " << op << " " << sym[2] << endl;
 			else{ // Logic Op
-			cout << "if " << p.sym[1] << " " << p.op << " " << p.sym[2] \
-				<< " goto " << p.label << endl;
-			cout << p.sym[0] << " = 0" << endl;
-			cout << "goto " << p.num << endl;
-			cout << p.label << ":" << endl;
-			cout << p.sym[0] << " = 1" << endl;
-			cout << p.num << ":" << endl;
+			cout << "if " << sym[1] << " " << op << " " << sym[2] \
+				<< " goto " << label << endl;
+			cout << sym[0] << " = 0" << endl;
+			cout << "goto " << num << endl;
+			cout << label << ":" << endl;
+			cout << sym[0] << " = 1" << endl;
+			cout << num << ":" << endl;
 			}
 			return;
 		case EERecord::Unary:
-			cout << p.sym[0] << " = " << p.op << " " << p.sym[1] << endl;
+			cout << sym[0] << " = " << op << " " << sym[1] << endl;
 			return;
 		case EERecord::Copy:
-			cout << p.sym[0] << " = " << p.sym[1] << endl;
+			cout << sym[0] << " = " << sym[1] << endl;
 			return;
 		case EERecord::LArr:
-			cout << p.sym[0] << "[" << p.sym[1] << "] = " << p.sym[2] << endl;
+			cout << sym[0] << "[" << sym[1] << "] = " << sym[2] << endl;
 			return;
 		case EERecord::RArr:
-			cout << p.sym[0] << " = " << p.sym[1] << "[" << p.sym[2] << "]" << endl;
+			cout << sym[0] << " = " << sym[1] << "[" << sym[2] << "]" << endl;
 			return;
 		case EERecord::Cond:
-			cout << "if " << p.sym[0] << " " << p.op << " " << p.sym[1] \
-				<< " goto " << p.label << endl;
+			cout << "if " << sym[0] << " " << op << " " << sym[1] \
+				<< " goto " << label << endl;
 			return;
 		case EERecord::Uncond:
-			cout << "goto " << p.label << endl;
+			cout << "goto " << label << endl;
 			return;
 		case EERecord::Label:
-			cout << p.label << ":" << endl;
+			cout << label << ":" << endl;
 			return;
 		case EERecord::Param:
-			cout << "param " << p.sym[0] << endl;
+			cout << "param " << sym[0] << endl;
 			return;
 		case EERecord::Asscall:
-			cout << p.sym[0] << " = call " << p.sym[1] << endl;
+			cout << sym[0] << " = call " << sym[1] << endl;
 			return;
 		case EERecord::Voidcall:
-			cout << "call " << p.sym[0] << endl;
+			cout << "call " << sym[0] << endl;
 			return;
 		case EERecord::Voidret:
 			cout << "return" << endl;
 			return;
 		default:
-			cout << "return " << p.sym[0] << endl;
+			cout << "return " << sym[0] << endl;
 			return;
 	}
 }

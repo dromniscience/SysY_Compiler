@@ -156,7 +156,7 @@ public:
 	~FunDefAST(); // Destroy AST nodes for fparams and function body
 
 	void Generator();
-	void Dump2file();
+	void Convert2EE();
 
 	SYMptr sym;
 	std::vector<ASTptr> fparams;

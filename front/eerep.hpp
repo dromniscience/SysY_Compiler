@@ -58,6 +58,9 @@ public:
 		else if(t == EERecord::Cond) {sym[0] = p; sym[1] = q; op = r; label = s;}
 	}
 
+	// Dump as Eeyore
+	void EEDump();
+
 	EERecord type;
 	std::string sym[3];
 	std::string op;
@@ -66,8 +69,6 @@ public:
 
 	int opt_bno;
 };
-
-void EEDump(const EELine &);
 
 extern std::list<EELine> eelines;
 

@@ -74,7 +74,7 @@ public:
 	void Debug(int depth);
 
 	virtual void Generator();
-	virtual void Dump2file();
+	virtual void Convert2EE();
 
 	ASTType type;
 	int bgnlno, endlno;
